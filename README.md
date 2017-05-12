@@ -2,6 +2,16 @@
 
 基于NIO的UDP发送器
 
+**输入：**
+
+- 指令byte数组
+- 目标端口号
+
+**输出：**
+
+- UDPReuslt结果对象（包含对方IP地址、结果数组[byte类型的数组]）
+
+
 ## 导入
 
 **Step 1.** Add the JitPack repository to your build file
