@@ -3,8 +3,6 @@ package com.hdl.udpsenderlib;
 import android.os.Handler;
 import android.os.Message;
 
-import com.socks.library.KLog;
-
 import java.io.IOException;
 import java.net.BindException;
 import java.net.DatagramPacket;
@@ -203,7 +201,6 @@ class UDPManager {
 
         } catch (BindException e) {
             handlerError(e);
-            KLog.e(TAG, "initServer: " + e.getMessage());
             return false;
         } catch (SocketException e) {
             handlerError(e);//防止被多次绑定，造成端口占用
@@ -329,7 +326,6 @@ class UDPManager {
             try {
                 readyCount = selector.select(100);// 获取已经准备好的通道数
             } catch (RuntimeException e) {
-                KLog.e(TAG, "initServer: " + e.getMessage());
                 handlerError(e);
                 e.printStackTrace();
             }
