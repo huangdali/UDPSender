@@ -98,3 +98,10 @@ UDPSender.getInstance()
                     }
                 });
 ```
+
+
+## 关闭任务
+
+```
+UDPSender.getInstance().stop();
+```
