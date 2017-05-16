@@ -31,7 +31,7 @@ allprojects {
 
 ```
 dependencies {
-	        compile 'com.github.huangdali:UDPSender:v1.2.1'
+	        compile 'com.github.huangdali:UDPSender:v1.2.3'
 	}
 ```
 
