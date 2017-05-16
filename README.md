@@ -39,7 +39,7 @@ dependencies {
 
 v1.3.2 新增UDP接收器：
 ```
- UDPReceiver.getInstance().with(this)
+ UDPReceiver.getInstance().with(mContent)
                 .setPort(9988)
                 .receive(new UDPResultCallback() {
                     @Override
