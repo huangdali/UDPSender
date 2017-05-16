@@ -37,9 +37,9 @@ dependencies {
 
 ## 使用方法
 
-v1.3.2 新增UDP接收器：
+v1.3.2 新增UDP接收器(用于直接接收数据，不用发送)：
 ```
- UDPReceiver.getInstance().with(mContent)
+ UDPReceiver.getInstance().with(mContext)
                 .setPort(9988)
                 .receive(new UDPResultCallback() {
                     @Override
