@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.hdl.udpsenderlib.UDPReceiver;
+import com.hdl.udpsenderlib.UDPResult;
+import com.hdl.udpsenderlib.UDPResultCallback;
 import com.hdl.udpsenderlib.UDPSender;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,6 +24,14 @@ public class MainActivity extends AppCompatActivity {
         tvReuslt = (TextView) findViewById(R.id.tv_result);
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage("扫描中，请稍后");
+        UDPReceiver.getInstance().with(this)
+                .setPort(9988)
+                .receive(new UDPResultCallback() {
+                    @Override
+                    public void onNext(UDPResult result) {
+
+                    }
+                });
     }
 
     /**
