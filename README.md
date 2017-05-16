@@ -37,6 +37,19 @@ dependencies {
 
 ## 使用方法
 
+v1.3.2 新增UDP接收器：
+```
+ UDPReceiver.getInstance().with(this)
+                .setPort(9988)
+                .receive(new UDPResultCallback() {
+                    @Override
+                    public void onNext(UDPResult result) {
+                    \\处理
+                    }
+                });
+```
+
+
 快速上手
 
 ```

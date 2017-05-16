@@ -46,7 +46,6 @@ public class UDPReceiver {
      * @param callback 结果回调
      */
     public synchronized void receive(final UDPResultCallback callback) {
-        callback.onStart();
         udpHelper = new UDPHelper(mContext, port);
         udpHelper.startReciver(callback);
     }

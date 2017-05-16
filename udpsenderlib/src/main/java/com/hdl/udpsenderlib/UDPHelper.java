@@ -43,6 +43,8 @@ class UDPHelper {
                     break;
                 case WHAT_HANDLER_MESSAGE_BIND_ERROR:
                     callback.onError(new Throwable("port bind error"));
+                    callback.onCompleted();
+                    stopReceive();
                     break;
             }
 
@@ -54,6 +56,7 @@ class UDPHelper {
      */
     public void startReciver(UDPResultCallback callback) {
         this.callback = callback;
+        callback.onStart();
         new Thread() {
             @Override
             public void run() {
