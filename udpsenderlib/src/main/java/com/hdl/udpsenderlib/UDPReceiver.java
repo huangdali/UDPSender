@@ -26,6 +26,7 @@ public class UDPReceiver {
 
     public UDPReceiver with(Context context) {
         this.mContext = context;
+        udpHelper = new UDPHelper(mContext, port);
         return this;
     }
 
@@ -46,7 +47,6 @@ public class UDPReceiver {
      * @param callback 结果回调
      */
     public synchronized void receive(final UDPResultCallback callback) {
-        udpHelper = new UDPHelper(mContext, port);
         udpHelper.startReciver(callback);
     }
 
