@@ -139,56 +139,58 @@ public class UDPSender {
      *
      * @param callback 结果回调
      */
-    public synchronized void send(final UDPResultCallback callback) {
+    public synchronized void start(final UDPResultCallback callback) {
         this.callback = callback;
         callback.onStart();
         startTask();
     }
 
     private UDPResultCallback callback;
-    UDPManager udpManager;
+
+    private UDPThread udpThread;
 
     private void startTask() {
-        if (udpManager != null && udpManager.isRunning()) {
+        if (udpThread != null && udpThread.isRuning()) {
             Message msg = handler.obtainMessage();
             msg.obj = new Throwable("Task running");
             msg.what = WHAT_TASK_ERROR;
             handler.sendMessage(msg);
             handler.sendEmptyMessage(WHAT_TASK_FINSHED);
         } else {
-            udpManager = new UDPManager();//重新创建对象
-            udpManager.setInstructions(instructions)//设置请求指令
-                    .setTargetPort(targetPort)//设置搜索设备的端口
-                    .setReceivePort(localReceivePort == 0 ? targetPort : localReceivePort)//设置搜索设备的端口
-                    .setReceiveTimeOut(receiveTimeOut + (currentCount - 1) * delay)//设置搜索超时时间,还要加上延迟时间（这样就可以不用定时了）
-                    .send(new UDPResultCallback() {
-                        @Override
-                        public void onNext(UDPResult result) {
-                            Message msg = handler.obtainMessage();
-                            msg.obj = result;
-                            msg.what = WHAT_TASK_NEXT;
-                            handler.sendMessage(msg);
-                        }
+            udpThread = new UDPThread();//重新创建对象
+            udpThread.setInstructions(instructions);//设置发送的指令
+            udpThread.setTargetPort(targetPort);//设置目标端口
+            udpThread.setReceivePort(localReceivePort);//设置接收端口
+            udpThread.setReceiveTimeOut(receiveTimeOut + (currentCount - 1) * delay);//设置接收超时时间
+            udpThread.getCallback(new UDPResultCallback() {
+                @Override
+                public void onNext(UDPResult result) {
+                    Message msg = handler.obtainMessage();
+                    msg.obj = result;
+                    msg.what = WHAT_TASK_NEXT;
+                    handler.sendMessage(msg);
+                }
 
-                        @Override
-                        public void onError(Throwable throwable) {
-                            Message msg = handler.obtainMessage();
-                            msg.obj = throwable;
-                            msg.what = WHAT_TASK_ERROR;
-                            handler.sendMessage(msg);
-                        }
+                @Override
+                public void onError(Throwable throwable) {
+                    Message msg = handler.obtainMessage();
+                    msg.obj = throwable;
+                    msg.what = WHAT_TASK_ERROR;
+                    handler.sendMessage(msg);
+                }
 
-                        @Override
-                        public void onCompleted() {
-                            currentCount++;
-                            if (currentCount <= sendCount) {
-                                startTask();
-                            } else {
-                                currentCount = 0;//要复位
-                                handler.sendEmptyMessage(WHAT_TASK_FINSHED);
-                            }
-                        }
-                    });
+                @Override
+                public void onCompleted() {
+                    currentCount++;
+                    if (currentCount <= sendCount) {
+                        startTask();
+                    } else {
+                        currentCount = 0;//要复位
+                        handler.sendEmptyMessage(WHAT_TASK_FINSHED);
+                    }
+                }
+            });
+            udpThread.start();
         }
     }
 
@@ -198,17 +200,17 @@ public class UDPSender {
      * @return
      */
     public boolean isRunning() {
-        if (udpManager == null) {
+        if (udpThread == null) {
             return false;
         }
-        return udpManager.isRunning();
+        return udpThread.isRuning();
     }
 
     /**
      * 停止运行
      */
     public UDPSender stop() {
-        udpManager.stop();
+        udpThread.stopThread();
         return this;
     }
 

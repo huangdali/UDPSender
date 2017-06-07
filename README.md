@@ -35,6 +35,24 @@ dependencies {
 	}
 ```
 
+
+**Step 3.** 添加网络访问权限
+
+AndroidManifest.xml中加入
+
+```
+<manifest ...>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application>
+        ...
+    </application>
+
+</manifest>
+```
+
+
+
+
 ## 使用方法
 
 v1.2.3 新增UDP接收器(用于直接接收数据，不用发送)：
