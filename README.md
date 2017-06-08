@@ -18,7 +18,7 @@
 
 Add it in your root build.gradle at the end of repositories:
 
-```
+```xml
 allprojects {
 		repositories {
 			...
@@ -29,9 +29,9 @@ allprojects {
 
 **Step 2.** Add the dependency
 
-```
+```xml
 dependencies {
-	        compile 'com.github.huangdali:UDPSender:v1.3.5'
+	     compile 'com.github.huangdali:UDPSender:v1.3.5'
 	}
 ```
 
@@ -40,7 +40,7 @@ dependencies {
 
 AndroidManifest.xml中加入
 
-```
+```xml
 <manifest ...>
     <uses-permission android:name="android.permission.INTERNET" />
     <application>
@@ -78,7 +78,7 @@ AndroidManifest.xml中加入
 
 ### 完整demo
 
-```
+```java
 UDPSender.getInstance()
                 .setInstructions(byteAraary)//设置发送的指令[可为空]
                 .setReceiveTimeOut(70 * 1000)//设置接收超时时间[可不写，默认为60s]--超时70s就停止任务
@@ -112,7 +112,7 @@ UDPSender.getInstance()
 
 ### 只接收数据
 
-```
+```java
  UDPSender.getInstance()
                 .setLocalReceivePort(9988)//接收端口
                 .start(new UDPResultCallback() {
@@ -141,6 +141,6 @@ UDPSender.getInstance()
 
 ## 关闭任务
 
-```
+```java
 UDPSender.getInstance().stop();
 ```
