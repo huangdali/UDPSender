@@ -12,6 +12,10 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
 
+/**
+ * @deprecated 不再使用此方法来接收数据
+ */
+@Deprecated
 class UDPHelper {
     public Boolean IsThreadDisable = false;
     private final static String UDPHelper = "UDPHelper";

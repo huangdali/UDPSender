@@ -21,7 +21,7 @@ import java.util.Set;
  * Created by HDL on 2017/6/7.
  */
 
-public class UDPThread extends Thread {
+class UDPThread extends Thread {
     /**
      * 拿到结果
      */

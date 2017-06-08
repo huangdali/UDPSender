@@ -3,10 +3,11 @@ package com.hdl.udpsenderlib;
 import android.content.Context;
 
 /**
+ * @deprecated 已弃用，之后发送接收都可以用udpsender{@link UDPSender#start(UDPResultCallback)}
  * UDP接收器
  * Created by dali on 2017/5/16.
  */
-
+@Deprecated
 public class UDPReceiver {
     private static UDPReceiver receiver;
     private int port;

@@ -18,10 +18,12 @@ import java.nio.channels.Selector;
 import java.util.Iterator;
 
 /**
+ * @deprecated 已经弃用，使用udpthread来完成{@link UDPThread}
  * UDP发送器---不对包外提供服务
  * <p> -不建议直接在使用此类来发送UDP，而是通过{@link UDPSender}来发送，如后续业务有调整只需修改UDPManger，
  * 而不用找到所有调用UDPSender的地方修改逻辑（只需修改UDPManger即可），便于后期维护 </p>
  */
+@Deprecated
 class UDPManager {
     private static final String TAG = "UDPManager";
     /**

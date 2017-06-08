@@ -95,6 +95,8 @@ public class UDPSender {
                 case WHAT_TASK_FINSHED:
                     callback.onCompleted();
                     break;
+                default:
+                    break;
             }
         }
     };
