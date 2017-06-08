@@ -222,4 +222,60 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    /**
+     * 设备体检
+     *
+     * @param view
+     */
+    public void onDeviceTest(View view) {
+        byte data[] = {50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, -64, -88, 0, 127, 57, 48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, -104, 92, 23, -90, 25, 0, 0};
+        UDPSender.getInstance()
+                .setTargetIp("192.168.0.126")
+                .setTargetPort(8899)
+                .setReceiveTimeOut(20*1000)
+                .setLocalReceivePort(8899)
+                .setInstructions(data)
+                .start(new UDPResultCallback() {
+                    /**
+                     * 请求开始的时候回调
+                     */
+                    @Override
+                    public void onStart() {
+                        super.onStart();
+                        ELog.hdl("开始体检了");
+                    }
+
+                    /**
+                     * 每拿到一个结果的时候就回调
+                     *
+                     * @param result 请求的结果
+                     */
+                    @Override
+                    public void onNext(UDPResult result) {
+                        ELog.hdl("开始拿到结果了");
+                        ELog.hdl(""+result);
+                    }
+
+                    /**
+                     * 请求结束的时候回调
+                     */
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        ELog.hdl("体检完成了");
+                    }
+
+                    /**
+                     * 当发生错误的时候回调
+                     *
+                     * @param throwable 错误信息
+                     */
+                    @Override
+                    public void onError(Throwable throwable) {
+                        super.onError(throwable);
+                        ELog.hdl("发生错误了 "+throwable);
+                    }
+                });
+    }
 }

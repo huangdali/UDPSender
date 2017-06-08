@@ -40,7 +40,7 @@ public class UDPSender {
     /**
      * 接收数据超时时间
      */
-    private long receiveTimeOut = 8 * 1000;//默认8s
+    private long receiveTimeOut = 60 * 1000;//默认60s
 
 
     /**
@@ -51,7 +51,7 @@ public class UDPSender {
     /**
      * 本机接收端口
      */
-    private int localReceivePort = 0;
+    private int localReceivePort = -1;
     /**
      * 指定数组（字节）
      */
@@ -177,7 +177,7 @@ public class UDPSender {
             udpThread.setInstructions(instructions);//设置发送的指令
             udpThread.setTargetPort(targetPort);//设置目标端口
             udpThread.setTargetIp(targetIp);//设置目标ip地址
-            udpThread.setReceivePort(localReceivePort);//设置接收端口
+            udpThread.setReceivePort((localReceivePort == -1) ? targetPort : localReceivePort);//设置接收端口(默认为发送端口)
             udpThread.setReceiveTimeOut(receiveTimeOut + (currentCount - 1) * delay);//设置接收超时时间
             udpThread.getCallback(new UDPResultCallback() {
                 @Override

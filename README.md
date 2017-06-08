@@ -1,6 +1,6 @@
 # UDPSender  [![](https://jitpack.io/v/huangdali/UDPSender.svg)](https://jitpack.io/#huangdali/UDPSender)
 
-基于NIO的UDP发送器
+基于NIO的UDP发送-接收器
 
 **输入：**
 
@@ -31,7 +31,7 @@ allprojects {
 
 ```
 dependencies {
-	        compile 'com.github.huangdali:UDPSender:v1.2.4'
+	        compile 'com.github.huangdali:UDPSender:v1.3.5'
 	}
 ```
 
@@ -50,31 +50,25 @@ AndroidManifest.xml中加入
 </manifest>
 ```
 
+## 更新历史
 
+- v1.3.5
 
+【修复】关闭任务（UDPSender.getInstance().stop()）不走onCompleted方法
+
+【新增】设置目标ip方法(默认广播形式发送)
+
+- 更多历史版本暂未记录
 
 ## 使用方法
 
-v1.2.3 新增UDP接收器(用于直接接收数据，不用发送)：
-```
- UDPReceiver.getInstance().with(mContext)
-                .setPort(9988)
-                .receive(new UDPResultCallback() {
-                    @Override
-                    public void onNext(UDPResult result) {
-                    \\处理
-                    }
-                });
-```
-
-
-快速上手
+### 快速上手
 
 ```
  UDPSender.getInstance()
                 .setInstructions(byteAraary)
                 .setTargetPort(port)
-                .send(new UDPResultCallback() {
+                .start(new UDPResultCallback() {
                     @Override
                     public void onNext(UDPResult result) {
                         //do something
@@ -82,50 +76,64 @@ v1.2.3 新增UDP接收器(用于直接接收数据，不用发送)：
                 });
 ```
 
-demo
+### 完整dmeo
 
 ```
 UDPSender.getInstance()
                 .setInstructions(byteAraary)//设置发送的指令[必须，不可为空]
-                .setReceiveTimeOut(10 * 1000)//设置接收超时时间[可不写，默认为8s]--超过10s没有接收到设备就视为无设备了就可以停止当前任务了
-                .setTargetPort(port)//设置发送的端口[可不写，默认为8899端口]
-                .setLocalReceivePort(port)//设置本机接收的端口[可不写，默认为8899端口]
-                .schedule(2, 3000)//执行2次，间隔三秒执行
-                .send(new UDPResultCallback() {
-                    /**
-                     * 请求开始的时候回调
-                     */
+                .setReceiveTimeOut(70 * 1000)//设置接收超时时间[可不写，默认为60s]--超时70s就停止任务
+                .setTargetPort(port)//设置发送的端口[必写]
+                .setLocalReceivePort(port)//设置本机接收的端口[可不写，默认为目标端口]
+                .setTargetIp("192.168.1.150")//设置目标ip地址，[可不写，默认广播]
+                .schedule(2, 3000)//执行2次，间隔三秒执行（上一次结束到下一次开始的时间）
+                .start(new UDPResultCallback() {
+
                     @Override
                     public void onStart() {
-
+                        //请求开始的时候回调
                     }
 
-                    /**
-                     * 每拿到一个结果的时候就回调
-                     *
-                     * @param result 请求的结果
-                     */
                     @Override
                     public void onNext(UDPResult result) {
-
+                        //每收到一个结果的时候就回调
                     }
 
-                    /**
-                     * 请求结束的时候回调
-                     */
                     @Override
                     public void onCompleted() {
-
+                        //请求结束的时候回调
                     }
 
-                    /**
-                     * 当发生错误的时候回调
-                     *
-                     * @param throwable
-                     */
                     @Override
                     public void onError(Throwable throwable) {
+                        //当发生错误的时候回调
+                    }
+                });
+```
 
+### 只接收数据
+
+```
+ UDPSender.getInstance()
+                .setLocalReceivePort(9988)//接收端口
+                .start(new UDPResultCallback() {
+                    @Override
+                    public void onStart() {
+                        ELog.hdl("开始了");
+                    }
+
+                    @Override
+                    public void onNext(UDPResult result) {
+                        ELog.hdl("收到结果" + result);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        ELog.hdl("出错" + throwable);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        ELog.hdl("完成");
                     }
                 });
 ```

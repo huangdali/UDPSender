@@ -133,7 +133,6 @@ class UDPThread extends Thread {
                     break;
                 case WHAT_UDPTHREAD_FINISHED:
                     stopThread();
-                    callback.onCompleted();
                     break;
             }
 
@@ -238,7 +237,7 @@ class UDPThread extends Thread {
                     int times = 0;
                     broadcast = new DatagramSocket();
                     broadcast.setBroadcast(true);
-                    while (times < send_time) {//每隔1s发送一起请求，持续sendtimes次
+                    while (times < send_time) {//每隔1s发送一次请求，持续sendtimes次
                         if (!isRuning) {
                             return;
                         }
@@ -268,6 +267,7 @@ class UDPThread extends Thread {
      * 停止任务
      */
     public void stopThread() {
+        callback.onCompleted();
         if (isRuning) {
             selector.wakeup();
             isRuning = false;
