@@ -3,8 +3,6 @@ package com.hdl.udpsenderlib;
 import android.os.Handler;
 import android.os.Message;
 
-import com.hdl.elog.ELog;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -122,7 +120,6 @@ class UDPThread extends Thread {
                     callback.onError(throwable);
                     break;
                 case WHAT_UDPTHREAD_FINISHED:
-                    ELog.hdl("完成了");
                     stopThread();
                     callback.onCompleted();
                     break;
@@ -246,7 +243,6 @@ class UDPThread extends Thread {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    ELog.hdl("结束线程了。。。。。。。。");
                 }
             }
         }.start();
