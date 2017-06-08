@@ -18,7 +18,7 @@
 
 Add it in your root build.gradle at the end of repositories:
 
-```xml
+```java
 allprojects {
 		repositories {
 			...
@@ -29,7 +29,7 @@ allprojects {
 
 **Step 2.** Add the dependency
 
-```xml
+```java
 dependencies {
 	     compile 'com.github.huangdali:UDPSender:v1.3.5'
 	}
