@@ -267,10 +267,10 @@ class UDPThread extends Thread {
      * 停止任务
      */
     public void stopThread() {
-        callback.onCompleted();
         if (isRuning) {
             selector.wakeup();
             isRuning = false;
+            callback.onCompleted();
         }
         try {
             if (server != null && server.isConnected()) {
