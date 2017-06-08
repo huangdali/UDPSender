@@ -31,7 +31,7 @@ allprojects {
 
 ```java
 dependencies {
-	     compile 'com.github.huangdali:UDPSender:v1.3.5'
+	     compile 'com.github.huangdali:UDPSender:v1.3.6'
 	}
 ```
 
@@ -51,6 +51,10 @@ AndroidManifest.xml中加入
 ```
 
 ## 更新历史
+
+ v1.3.6
+
+- 【修复】多次调用onCompleted方法
 
  v1.3.5
 
