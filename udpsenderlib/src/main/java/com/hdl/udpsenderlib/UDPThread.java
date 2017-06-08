@@ -21,6 +21,10 @@ import java.util.Set;
 
 class UDPThread extends Thread {
     /**
+     * 发送的命令
+     */
+    private byte instructions[];
+    /**
      * 拿到结果
      */
     private static final int WHAT_UDPTHREAD_GET_RESULT = 33;
@@ -49,29 +53,28 @@ class UDPThread extends Thread {
      */
     private int receivePort = 8899;
     /**
-     * 任务是否正在执行
-     */
-    private boolean isRuning;
-    /**
      * 接收超时时间,
      * <p>当UDPSender接收数据时，如果超过了shakeTimeOut还是没有响应，那么一般就是已经搜索完成了，此时可根据这个值来判断是否要结束搜索 </p>
      * <p>默认8s，5是时间因子</p>
      */
     private long receiveTimeOut = 10 * 1000;
-
-
     /**
      * 最后一次接收的时间
      */
     private long lastReciveTime = System.currentTimeMillis();
+    /**
+     * 任务是否正在执行
+     */
+    private boolean isRuning;
+    /**
+     * 目标ip，默认为广播形式，可指定目标ip发送
+     */
+    private String targetIp = "255.255.255.255";
+
     private DatagramSocket server;
     private DatagramSocket broadcast;
     private Selector selector;
     private DatagramChannel udpChannel;
-    /**
-     * 发送的命令
-     */
-    private byte instructions[];
     private UDPResultCallback callback;
 
     /**
@@ -98,6 +101,15 @@ class UDPThread extends Thread {
 
     public void setReceivePort(int receivePort) {
         this.receivePort = receivePort;
+    }
+
+    /**
+     * 设置ip地址
+     *
+     * @param targetIp
+     */
+    public void setTargetIp(String targetIp) {
+        this.targetIp = targetIp;
     }
 
     private Handler handler = new Handler() {
@@ -215,6 +227,10 @@ class UDPThread extends Thread {
      * 发送广播
      */
     private void sendBroadcast() {
+        if (!UDPUtils.isIpv4(targetIp)) {//判断是否是正确的ip地址
+            handlerError(new Throwable("targetIp error"));
+            return;
+        }
         new Thread() {
             @Override
             public void run() {
@@ -228,7 +244,7 @@ class UDPThread extends Thread {
                         }
                         times++;
                         if (instructions != null && instructions.length > 0) {
-                            DatagramPacket packet = new DatagramPacket(instructions, instructions.length, InetAddress.getByName("255.255.255.255"), targetPort);
+                            DatagramPacket packet = new DatagramPacket(instructions, instructions.length, InetAddress.getByName(targetIp), targetPort);
                             broadcast.send(packet);
                         }
                         Thread.sleep(1000);
@@ -257,11 +273,11 @@ class UDPThread extends Thread {
             isRuning = false;
         }
         try {
-            if (server != null&&server.isConnected()) {
+            if (server != null && server.isConnected()) {
                 server.close();
                 server = null;
             }
-            if (broadcast != null&&broadcast.isConnected()) {
+            if (broadcast != null && broadcast.isConnected()) {
                 broadcast.close();
                 broadcast = null;
             }

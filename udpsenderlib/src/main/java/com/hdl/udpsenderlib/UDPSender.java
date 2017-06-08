@@ -56,6 +56,19 @@ public class UDPSender {
      * 指定数组（字节）
      */
     private byte[] instructions;
+    /**
+     * 发送的次数，默认是1次
+     */
+    private int sendCount = 1;
+
+    /**
+     * 上一次结束时到下一次开始的时间，默认10s
+     */
+    private long delay = 10 * 1000;
+    /**
+     * 目标ip地址，默认为广播
+     */
+    private String targetIp = "255.255.255.255";
 
     /**
      * 设置接收超时时间
@@ -69,14 +82,15 @@ public class UDPSender {
     }
 
     /**
-     * 发送的次数，默认是1次
+     * 设置目标ip地址，默认为广播
+     *
+     * @param targetIp 目标ip地址
+     * @return
      */
-    private int sendCount = 1;
-
-    /**
-     * 上一次结束时到下一次开始的时间，默认10s
-     */
-    private long delay = 10 * 1000;
+    public UDPSender setTargetIp(String targetIp) {
+        this.targetIp = targetIp;
+        return this;
+    }
 
     private Handler handler = new Handler() {
         UDPResult result;
@@ -162,6 +176,7 @@ public class UDPSender {
             udpThread = new UDPThread();//重新创建对象
             udpThread.setInstructions(instructions);//设置发送的指令
             udpThread.setTargetPort(targetPort);//设置目标端口
+            udpThread.setTargetIp(targetIp);//设置目标ip地址
             udpThread.setReceivePort(localReceivePort);//设置接收端口
             udpThread.setReceiveTimeOut(receiveTimeOut + (currentCount - 1) * delay);//设置接收超时时间
             udpThread.getCallback(new UDPResultCallback() {
