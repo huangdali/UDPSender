@@ -64,7 +64,7 @@ AndroidManifest.xml中加入
 
 ### 快速上手
 
-```
+```java
  UDPSender.getInstance()
                 .setInstructions(byteAraary)
                 .setTargetPort(port)
