@@ -80,7 +80,7 @@ AndroidManifest.xml中加入
 
 ```
 UDPSender.getInstance()
-                .setInstructions(byteAraary)//设置发送的指令[必须，不可为空]
+                .setInstructions(byteAraary)//设置发送的指令[可为空]
                 .setReceiveTimeOut(70 * 1000)//设置接收超时时间[可不写，默认为60s]--超时70s就停止任务
                 .setTargetPort(port)//设置发送的端口[必写]
                 .setLocalReceivePort(port)//设置本机接收的端口[可不写，默认为目标端口]
