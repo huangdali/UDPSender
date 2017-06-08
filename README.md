@@ -52,13 +52,13 @@ AndroidManifest.xml中加入
 
 ## 更新历史
 
-- v1.3.5
+ v1.3.5
 
-【`修复`】关闭任务（UDPSender.getInstance().stop()）不走onCompleted方法
+- 【`修复`】关闭任务（UDPSender.getInstance().stop()）不走onCompleted方法
 
-【`新增`】设置目标ip方法(默认广播形式发送)
+- 【`新增`】设置目标ip方法(默认广播形式发送)
 
-- 更多历史版本暂未记录
+更多历史版本暂未记录
 
 ## 使用方法
 
