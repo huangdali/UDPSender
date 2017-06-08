@@ -76,7 +76,7 @@ AndroidManifest.xml中加入
                 });
 ```
 
-### 完整dmeo
+### 完整demo
 
 ```
 UDPSender.getInstance()
