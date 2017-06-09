@@ -4,6 +4,7 @@ package com.hdl.udpsenderlib;
 import android.os.Handler;
 import android.os.Message;
 
+
 /**
  * UDP管理器，隔离UDP实现层逻辑
  * Created by dali on 2017/4/14.
@@ -69,6 +70,10 @@ public class UDPSender {
      * 目标ip地址，默认为广播
      */
     private String targetIp = "255.255.255.255";
+    /**
+     * 默认是在运行的
+     */
+    private boolean isRunning = true;
 
     /**
      * 设置接收超时时间
@@ -99,14 +104,17 @@ public class UDPSender {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case WHAT_TASK_NEXT:
-                    result = (UDPResult) msg.obj;
-                    callback.onNext(result);
+                    if (isRunning()) {
+                        result = (UDPResult) msg.obj;
+                        callback.onNext(result);
+                    }
                     break;
                 case WHAT_TASK_ERROR:
                     Throwable throwable = (Throwable) msg.obj;
                     callback.onError(throwable);
                     break;
                 case WHAT_TASK_FINSHED:
+                    isRunning = false;
                     callback.onCompleted();
                     break;
                 default:
@@ -200,10 +208,12 @@ public class UDPSender {
                 public void onCompleted() {
                     currentCount++;
                     if (currentCount <= sendCount) {
-                        startTask();
+                        if (isRunning) {
+                            startTask();
+                        }
                     } else {
                         currentCount = 0;//要复位
-                        handler.sendEmptyMessage(WHAT_TASK_FINSHED);
+                        stop();
                     }
                 }
             });
@@ -227,7 +237,10 @@ public class UDPSender {
      * 停止运行
      */
     public UDPSender stop() {
-        udpThread.stopThread();
+        if (isRunning()) {
+            handler.sendEmptyMessage(WHAT_TASK_FINSHED);//停止当前任务
+            udpThread.stopThread();
+        }
         return this;
     }
 

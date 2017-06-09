@@ -27,6 +27,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.2.0'
     //日志打印
     compile 'com.github.huangdali:ELog:v1.3.3'
+
+
     testCompile 'junit:junit:4.12'
     compile project(path: ':udpsenderlib')
 }

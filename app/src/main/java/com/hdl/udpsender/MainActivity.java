@@ -165,32 +165,34 @@ public class MainActivity extends AppCompatActivity {
 //        UDPThread udpThread = new UDPThread();
         ShakeData shakeData = new ShakeData();
         shakeData.setCmd(1);
+        send(shakeData);
 //        udpThread.setInstructions(ShakeData.getShakeDataCastByteArray(shakeData));
 //        udpThread.start();
 //        start(shakeData);
-        UDPSender.getInstance()
-                .setLocalReceivePort(9988)
-                .start(new UDPResultCallback() {
-                    @Override
-                    public void onStart() {
-                        ELog.hdl("开始了");
-                    }
+//        UDPSender.getInstance()
+//                .setLocalReceivePort(9988)
+//                .start(new UDPResultCallback() {
+//                    @Override
+//                    public void onStart() {
+//                        ELog.hdl("开始了");
+//                    }
+//
+//                    @Override
+//                    public void onNext(UDPResult result) {
+//                        ELog.hdl("" + result);
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable throwable) {
+//                        ELog.hdl("出错了" + throwable);
+//                    }
+//
+//                    @Override
+//                    public void onCompleted() {
+//                        ELog.hdl("完成了");
+//                    }
+//                });
 
-                    @Override
-                    public void onNext(UDPResult result) {
-                        ELog.hdl("" + result);
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable) {
-                        ELog.hdl("出错了" + throwable);
-                    }
-
-                    @Override
-                    public void onCompleted() {
-                        ELog.hdl("完成了");
-                    }
-                });
     }
 
     private void send(ShakeData shakeData) {

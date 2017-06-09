@@ -41,6 +41,10 @@ class UDPThread extends Thread {
      */
     private static final int WHAT_UDPTHREAD_ERROR = 36;
     /**
+     * 关闭任务
+     */
+    private static final int WHAT_UDPTHREAD_CLOSE = 37;
+    /**
      * 发送次数,默认10次
      */
     public int send_time = 10;
@@ -65,7 +69,7 @@ class UDPThread extends Thread {
     /**
      * 任务是否正在执行
      */
-    private boolean isRuning;
+    private boolean isRuning =true;
     /**
      * 目标ip，默认为广播形式，可指定目标ip发送
      */
@@ -123,15 +127,20 @@ class UDPThread extends Thread {
                     callback.onStart();
                     break;
                 case WHAT_UDPTHREAD_GET_RESULT:
-                    UDPResult result = (UDPResult) msg.obj;
-                    callback.onNext(result);
-                    lastReciveTime = System.currentTimeMillis();//记录最后一次接收的时间
+                    if (isRuning()) {
+                        UDPResult result = (UDPResult) msg.obj;
+                        callback.onNext(result);
+                        lastReciveTime = System.currentTimeMillis();//记录最后一次接收的时间
+                    }
                     break;
                 case WHAT_UDPTHREAD_ERROR:
                     Throwable throwable = (Throwable) msg.obj;
                     callback.onError(throwable);
                     break;
                 case WHAT_UDPTHREAD_FINISHED:
+                    callback.onCompleted();
+                    break;
+                case WHAT_UDPTHREAD_CLOSE:
                     stopThread();
                     break;
             }
@@ -143,7 +152,7 @@ class UDPThread extends Thread {
      * 拿到回调
      */
     public void getCallback(UDPResultCallback callback) {
-        this.callback = callback;
+            this.callback = callback;
     }
 
     /**
@@ -152,19 +161,16 @@ class UDPThread extends Thread {
      * @param throwable 错误信息
      */
     private void handlerError(Throwable throwable) {
-        isRuning = false;//设置为不在运行状态
-        stopThread();//还要关闭通道哦
         Message msg = handler.obtainMessage();
         msg.obj = throwable;
         msg.what = WHAT_UDPTHREAD_ERROR;
         handler.sendMessage(msg);//通知错误信息
-        handler.sendEmptyMessage(WHAT_UDPTHREAD_FINISHED);//错误的同时，需要结束任务
+        handler.sendEmptyMessage(WHAT_UDPTHREAD_CLOSE);//出错的时候需要关闭任务
     }
 
     @Override
     public void run() {
         handler.sendEmptyMessage(WHAT_UDPTHREAD_START);
-        isRuning = true;
         try {
             System.out.println("start udpthread");
             selector = Selector.open();
@@ -179,11 +185,10 @@ class UDPThread extends Thread {
             sendBroadcast();//发送广播
 
             UDPResult result;
-            while (isRuning) {
+            while (isRuning()) {
                 long currentReciveTime = System.currentTimeMillis();//记录当前接收时间
                 if (receiveTimeOut < currentReciveTime - lastReciveTime) {//如果超过了指定的时间，还是没有接收到数据，那么就停止搜索
-                    isRuning = false;//结束任务
-                    handler.sendEmptyMessage(WHAT_UDPTHREAD_FINISHED);
+                    handler.sendEmptyMessage(WHAT_UDPTHREAD_CLOSE);
                 }
 
                 int n = selector.select(100);
@@ -216,8 +221,6 @@ class UDPThread extends Thread {
             // TODO Auto-generated catch block
             e.printStackTrace();
             handlerError(e);
-        } finally {
-            stopThread();
         }
 
     }
@@ -238,7 +241,7 @@ class UDPThread extends Thread {
                     broadcast = new DatagramSocket();
                     broadcast.setBroadcast(true);
                     while (times < send_time) {//每隔1s发送一次请求，持续sendtimes次
-                        if (!isRuning) {
+                        if (!isRuning()) {
                             return;
                         }
                         times++;
@@ -252,12 +255,6 @@ class UDPThread extends Thread {
                 } catch (Exception e) {
                     e.printStackTrace();
                     handlerError(e);
-                } finally {
-                    try {
-                        broadcast.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                 }
             }
         }.start();
@@ -267,10 +264,9 @@ class UDPThread extends Thread {
      * 停止任务
      */
     public void stopThread() {
-        if (isRuning) {
-            selector.wakeup();
+        if (isRuning()) {
             isRuning = false;
-            callback.onCompleted();
+            handler.sendEmptyMessage(WHAT_UDPTHREAD_FINISHED);
         }
         try {
             if (server != null && server.isConnected()) {

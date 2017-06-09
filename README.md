@@ -31,7 +31,7 @@ allprojects {
 
 ```java
 dependencies {
-	     compile 'com.github.huangdali:UDPSender:v1.3.6'
+	     compile 'com.github.huangdali:UDPSender:v1.3.8'
 	}
 ```
 
@@ -51,6 +51,15 @@ AndroidManifest.xml中加入
 ```
 
 ## 更新历史
+
+v1.3.8
+
+- 【修复】修复特殊情况下的崩溃
+
+v1.3.7
+
+- 【修复】任务结束时自动关闭相关接口
+
 
  v1.3.6
 
