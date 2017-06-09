@@ -70,10 +70,6 @@ public class UDPSender {
      * 目标ip地址，默认为广播
      */
     private String targetIp = "255.255.255.255";
-    /**
-     * 默认是在运行的
-     */
-    private boolean isRunning = true;
 
     /**
      * 设置接收超时时间
@@ -104,17 +100,17 @@ public class UDPSender {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case WHAT_TASK_NEXT:
-                    if (isRunning()) {
-                        result = (UDPResult) msg.obj;
-                        callback.onNext(result);
-                    }
+                    result = (UDPResult) msg.obj;
+                    callback.onNext(result);
                     break;
                 case WHAT_TASK_ERROR:
                     Throwable throwable = (Throwable) msg.obj;
                     callback.onError(throwable);
                     break;
                 case WHAT_TASK_FINSHED:
-                    isRunning = false;
+                    if (udpThread != null && udpThread.isRuning()) {
+                        udpThread.stopThread();
+                    }
                     callback.onCompleted();
                     break;
                 default:
@@ -179,7 +175,6 @@ public class UDPSender {
             msg.obj = new Throwable("Task running");
             msg.what = WHAT_TASK_ERROR;
             handler.sendMessage(msg);
-            handler.sendEmptyMessage(WHAT_TASK_FINSHED);
         } else {
             udpThread = new UDPThread();//重新创建对象
             udpThread.setInstructions(instructions);//设置发送的指令
@@ -208,12 +203,16 @@ public class UDPSender {
                 public void onCompleted() {
                     currentCount++;
                     if (currentCount <= sendCount) {
-                        if (isRunning) {
+                        if (!isClickStop) {//非强制停止的才能继续下一次任务
                             startTask();
+                            isClickStop = false;
+                        }else{
+                            currentCount = 1;//要复位
+                            handler.sendEmptyMessage(WHAT_TASK_FINSHED);//完成了
                         }
                     } else {
-                        currentCount = 0;//要复位
-                        stop();
+                        currentCount = 1;//要复位
+                        handler.sendEmptyMessage(WHAT_TASK_FINSHED);//完成了
                     }
                 }
             });
@@ -234,11 +233,16 @@ public class UDPSender {
     }
 
     /**
+     * 是否点击停止了
+     */
+    private boolean isClickStop = false;
+
+    /**
      * 停止运行
      */
     public UDPSender stop() {
-        if (isRunning()) {
-            handler.sendEmptyMessage(WHAT_TASK_FINSHED);//停止当前任务
+        isClickStop = true;
+        if (isRunning()) {//在运行的时候才停止线程
             udpThread.stopThread();
         }
         return this;

@@ -20,6 +20,7 @@ import java.util.Set;
  */
 
 class UDPThread extends Thread {
+
     /**
      * 发送的命令
      */
@@ -80,7 +81,10 @@ class UDPThread extends Thread {
     private Selector selector;
     private DatagramChannel udpChannel;
     private UDPResultCallback callback;
-
+    public UDPThread(){
+        isRuning=true;
+        lastReciveTime=System.currentTimeMillis();
+    }
     /**
      * 设置接收超时时间
      *
@@ -124,6 +128,7 @@ class UDPThread extends Thread {
             }
             switch (msg.what) {
                 case WHAT_UDPTHREAD_START:
+                    isRuning=true;
                     callback.onStart();
                     break;
                 case WHAT_UDPTHREAD_GET_RESULT:
@@ -190,7 +195,6 @@ class UDPThread extends Thread {
                 if (receiveTimeOut < currentReciveTime - lastReciveTime) {//如果超过了指定的时间，还是没有接收到数据，那么就停止搜索
                     handler.sendEmptyMessage(WHAT_UDPTHREAD_CLOSE);
                 }
-
                 int n = selector.select(100);
                 if (n > 0) {
                     Set<SelectionKey> keys = selector.selectedKeys();

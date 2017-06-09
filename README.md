@@ -31,7 +31,7 @@ allprojects {
 
 ```java
 dependencies {
-	     compile 'com.github.huangdali:UDPSender:v1.3.8'
+	     compile 'com.github.huangdali:UDPSender:v1.3.9'
 	}
 ```
 
@@ -51,6 +51,10 @@ AndroidManifest.xml中加入
 ```
 
 ## 更新历史
+
+v1.3.9
+
+- 【修复】调用定时任务时突然停止导致下一次重新开始任务时立刻停止当前的任务
 
 v1.3.8
 
