@@ -20,31 +20,48 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="onStop"
+        android:visibility="gone"
         android:text="停止任务" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:onClick="onTest"
         android:text="简单测试" />
+
     <Button
         android:layout_width="wrap_content"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         android:onClick="onReceive"
         android:text="接收" />
+
     <Button
         android:layout_width="wrap_content"
-        android:text="设备体检"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
         android:onClick="onDeviceTest"
-        android:layout_height="wrap_content" />
+        android:text="设备体检" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onUpdateId"
+        android:text="更换id" />
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="5dp"
+        android:background="#d000">
 
         <TextView
             android:id="@+id/tv_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="control"
+            android:textColor="#fff"
             android:textSize="12sp" />
     </ScrollView>
 

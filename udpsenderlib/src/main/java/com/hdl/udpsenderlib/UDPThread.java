@@ -70,7 +70,7 @@ class UDPThread extends Thread {
     /**
      * 任务是否正在执行
      */
-    private boolean isRuning =true;
+    private boolean isRuning = true;
     /**
      * 目标ip，默认为广播形式，可指定目标ip发送
      */
@@ -81,10 +81,12 @@ class UDPThread extends Thread {
     private Selector selector;
     private DatagramChannel udpChannel;
     private UDPResultCallback callback;
-    public UDPThread(){
-        isRuning=true;
-        lastReciveTime=System.currentTimeMillis();
+
+    public UDPThread() {
+        isRuning = true;
+        lastReciveTime = System.currentTimeMillis();
     }
+
     /**
      * 设置接收超时时间
      *
@@ -117,6 +119,9 @@ class UDPThread extends Thread {
      * @param targetIp
      */
     public void setTargetIp(String targetIp) {
+        if (!"255.255.255.255".equals(targetIp)) {//指定id时只发一次
+            send_time = 1;
+        }
         this.targetIp = targetIp;
     }
 
@@ -128,7 +133,7 @@ class UDPThread extends Thread {
             }
             switch (msg.what) {
                 case WHAT_UDPTHREAD_START:
-                    isRuning=true;
+                    isRuning = true;
                     callback.onStart();
                     break;
                 case WHAT_UDPTHREAD_GET_RESULT:
@@ -157,7 +162,7 @@ class UDPThread extends Thread {
      * 拿到回调
      */
     public void getCallback(UDPResultCallback callback) {
-            this.callback = callback;
+        this.callback = callback;
     }
 
     /**

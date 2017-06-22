@@ -31,7 +31,7 @@ allprojects {
 
 ```java
 dependencies {
-	     compile 'com.github.huangdali:UDPSender:v1.3.9'
+	     compile 'com.github.huangdali:UDPSender:v1.4.0'
 	}
 ```
 
@@ -51,6 +51,8 @@ AndroidManifest.xml中加入
 ```
 
 ## 更新历史
+v1.4.0
+-【新增】指定ip时默认只发送一次包(如需多次发送，可通过schedule方法指定)
 
 v1.3.9
 
