@@ -211,15 +211,15 @@ class UDPThread extends Thread {
                             InetSocketAddress client = (InetSocketAddress) dc.receive(receiveBuffer);
                             key.interestOps(SelectionKey.OP_READ);
                             receiveBuffer.flip();
-                            if (client.getPort() == receivePort) {//指定端口接收
-                                result = new UDPResult();
-                                result.setIp(client.getAddress().getHostAddress());
-                                result.setResultData(receiveBuffer.array());
-                                Message msg = handler.obtainMessage();
-                                msg.obj = result;
-                                msg.what = WHAT_UDPTHREAD_GET_RESULT;
-                                handler.sendMessage(msg);
-                            }
+//                            if (client.getPort() == receivePort) {//不能这样判断，既然能收到数据，说明已经是接收端口
+                            result = new UDPResult();
+                            result.setIp(client.getAddress().getHostAddress());
+                            result.setResultData(receiveBuffer.array());
+                            Message msg = handler.obtainMessage();
+                            msg.obj = result;
+                            msg.what = WHAT_UDPTHREAD_GET_RESULT;
+                            handler.sendMessage(msg);
+//                            }
                             receiveBuffer.clear();
                         }
                     }

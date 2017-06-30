@@ -13,70 +13,67 @@
 
 
 ## 导入
-
-**Step 1.** Add the JitPack repository to your build file
-
-Add it in your root build.gradle at the end of repositories:
+在你项目app/build.gradle中加入如下的代码
 
 ```java
-allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
-	}
+    dependencies {
+       ...
+       compile 'com.jwkj:udpsender:v2.0.1'
+    }
 ```
 
-**Step 2.** Add the dependency
-
-```java
-dependencies {
-	     compile 'com.github.huangdali:UDPSender:v1.4.0'
-	}
-```
-
-
-**Step 3.** 添加网络访问权限
-
-AndroidManifest.xml中加入
-
-```xml
-<manifest ...>
-    <uses-permission android:name="android.permission.INTERNET" />
-    <application>
-        ...
-    </application>
-
-</manifest>
-```
 
 ## 更新历史
+
+### v2.X版
+
+v2.0.1
+- 【修复】只能接收对方端口为自身接收端口的bug
+- 【优化】底层库代码优化，已经相对成熟，可用于生产环境
+
+> 温馨提示： 不建议使用v1.X版，建议使用最新版，使用方法不变
+
+
+### v1.X版
+
 v1.4.0
 
 - 【新增】指定ip时默认只发送一次包(如需多次发送，可通过schedule方法指定)
+
+- 【bug】只能发送方指定端口，bug，不要使用此版本
 
 v1.3.9
 
 - 【修复】调用定时任务时突然停止导致下一次重新开始任务时立刻停止当前的任务
 
+- 【bug】只能发送方指定端口，bug，不要使用此版本
+
 v1.3.8
 
 - 【修复】修复特殊情况下的崩溃
+
+- 【bug】只能发送方指定端口，bug，不要使用此版本
 
 v1.3.7
 
 - 【修复】任务结束时自动关闭相关接口
 
+- 【bug】只能发送方指定端口，bug，不要使用此版本
 
  v1.3.6
 
 - 【修复】多次调用onCompleted方法
+
+
+- 【bug】只能发送方指定端口，bug，不要使用此版本
 
  v1.3.5
 
 - 【修复】关闭任务（UDPSender.getInstance().stop()）不走onCompleted方法
 
 - 【新增】设置目标ip方法(默认广播形式发送)
+
+- 【bug】只能发送方指定端口，bug，不要使用此版本
 
 更多历史版本暂未记录
 
@@ -163,4 +160,19 @@ UDPSender.getInstance()
 
 ```java
 UDPSender.getInstance().stop();
+```
+
+## UDPReslt
+
+```java
+public class UDPResult {
+    /**
+     * 对方ip地址
+     */
+    private String ip;
+    /**
+     * 对方返回的结果
+     */
+    private byte[] resultData;
+}
 ```
