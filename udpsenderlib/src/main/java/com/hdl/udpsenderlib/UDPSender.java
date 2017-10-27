@@ -70,7 +70,6 @@ public class UDPSender {
      * 目标ip地址，默认为广播
      */
     private String targetIp = "255.255.255.255";
-
     /**
      * 设置接收超时时间
      *

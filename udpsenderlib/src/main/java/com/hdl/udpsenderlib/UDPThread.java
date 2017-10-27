@@ -81,6 +81,14 @@ class UDPThread extends Thread {
     private Selector selector;
     private DatagramChannel udpChannel;
     private UDPResultCallback callback;
+    /**
+     * 最大缓冲
+     */
+    private static final int MAX_BUFFERSIZE = 1024;
+    /**
+     * 用来清除bytebuf缓存
+     */
+    private byte[] clearBuf = new byte[MAX_BUFFERSIZE];
 
     public UDPThread() {
         isRuning = true;
@@ -112,6 +120,11 @@ class UDPThread extends Thread {
     public void setReceivePort(int receivePort) {
         this.receivePort = receivePort;
     }
+
+    /**
+     * 用于记录当前接收时间
+     */
+    private long currentReciveTime;
 
     /**
      * 设置ip地址
@@ -191,12 +204,12 @@ class UDPThread extends Thread {
                 server.bind(new InetSocketAddress(targetPort));
             }
             udpChannel.register(selector, SelectionKey.OP_READ);
-            ByteBuffer receiveBuffer = ByteBuffer.allocate(1024);
+            ByteBuffer receiveBuffer = ByteBuffer.allocate(MAX_BUFFERSIZE);
             sendBroadcast();//发送广播
 
             UDPResult result;
             while (isRuning()) {
-                long currentReciveTime = System.currentTimeMillis();//记录当前接收时间
+                currentReciveTime = System.currentTimeMillis();//记录当前接收时间
                 if (receiveTimeOut < currentReciveTime - lastReciveTime) {//如果超过了指定的时间，还是没有接收到数据，那么就停止搜索
                     handler.sendEmptyMessage(WHAT_UDPTHREAD_CLOSE);
                 }
@@ -208,10 +221,15 @@ class UDPThread extends Thread {
                         if (key.isReadable()) {
                             DatagramChannel dc = (DatagramChannel) key.channel();
                             dc.configureBlocking(false);
+                            //将postion  limit  make等复位（不会真的清除缓存，这里采用覆盖策略）
+                            receiveBuffer.clear();
+                            //清除缓存（由于clear方法不会真的清除缓存，所以这里采用覆盖策略）
+                            receiveBuffer.put(clearBuf);
+                            //切换到读状态
+                            receiveBuffer.flip();
                             InetSocketAddress client = (InetSocketAddress) dc.receive(receiveBuffer);
                             key.interestOps(SelectionKey.OP_READ);
                             receiveBuffer.flip();
-//                            if (client.getPort() == receivePort) {//不能这样判断，既然能收到数据，说明已经是接收端口
                             result = new UDPResult();
                             result.setIp(client.getAddress().getHostAddress());
                             result.setResultData(receiveBuffer.array());
@@ -219,7 +237,6 @@ class UDPThread extends Thread {
                             msg.obj = result;
                             msg.what = WHAT_UDPTHREAD_GET_RESULT;
                             handler.sendMessage(msg);
-//                            }
                             receiveBuffer.clear();
                         }
                     }

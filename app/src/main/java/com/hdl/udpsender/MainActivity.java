@@ -74,13 +74,13 @@ public class MainActivity extends AppCompatActivity {
                      */
                     @Override
                     public void onNext(UDPResult result) {
-                        ELog.hdl("" + result);
+//                        ELog.hdl("" + result);
                         ShakeData dataResult = ShakeData.getShakeDataResult(result.getResultData());
                         if (dataResult.getCmd() == ShakeData.Cmd.CMD_RECEIVE_MESSAGE_HEADER_CMDID) {
                             int id = dataResult.getId();
                             String pwd = dataResult.getFlag() == 1 ? "有密码" : "无密码";
                             tvReuslt.append((count++) + ")\t ip = " + result.getIp() + "\t\t\tid = " + id + "\t\t\t" + pwd + "\n\n");
-                            ELog.hdl("result = " + dataResult.toString());
+//                            ELog.hdl("result = " + dataResult.toString());
                         }
                     }
 

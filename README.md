@@ -18,7 +18,7 @@
 ```java
     dependencies {
        ...
-       compile 'com.jwkj:udpsender:v2.0.1'
+       compile 'com.jwkj:udpsender:v2.0.2'
     }
 ```
 
@@ -128,6 +128,9 @@ public class UDPResult {
 ## 历史更新记录
 
 ### v2.X版
+
+v2.0.2 ( [2017.10.27]() )
+- 【修复】数据清理不及时，导致产生脏数据
 
 v2.0.1
 - 【修复】只能接收对方端口为自身接收端口的bug
