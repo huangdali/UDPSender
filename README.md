@@ -1,4 +1,4 @@
-# UDPSender  [![](https://jitpack.io/v/huangdali/UDPSender.svg)](https://jitpack.io/#huangdali/UDPSender)
+# UDPSender
 
 基于NIO的UDP发送-接收器
 
